@@ -20,6 +20,8 @@ namespace API
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        //You will use configure services to add methods to the service container so that you can use 
+        //them using dependency injection in your project
         public void ConfigureServices(IServiceCollection services)
         {
             //AddTransient(): This one is instantiated for a individual method and not the
@@ -44,9 +46,39 @@ namespace API
 
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
+
+            //Cors is a mechanism that's used to tell browsers to give a web application running 
+            //at one origin access to selected resources from a different origin.
+            //For security reasons browsers restrict cross origin HTTP requests initiated from javascript.
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy => 
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+        //The configuring method is used to configure the HTTP pipelines so any middlewares 
+        //that you want to add. We will be adding that inside the configure method.
+
+        /*Whenever an HTTP request comes in something must handle that request. So it eventually results in 
+        an HTTP response. So those pieces of code that handles the request and results in a response 
+        make up the request pipeline.
+
+        Middleware: What we can do is, configure this request pipeline by adding middlewares which are 
+        software components that are assembled into an application pipeline to handle request and response.
+
+        Now keep in mind the order of pipeline is important. It always gets passed from the first to the last.
+        A good example will be authentication middleware.
+
+        If the middleware component finds that a request isn't authorized it will not pass it to the next piece
+        of the middleware but it will immediately return an unauthorized response.
+        It is hence important that authentication Middleware is added before other components that shouldn't
+        be triggered in case of an unauthorized request.
+         */
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //if (env.IsDevelopment())
@@ -58,7 +90,7 @@ namespace API
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-            //if we call api with http then, firstwe get a 307(temporary redirect) response
+            //If we call api with http then, firstwe get a 307(temporary redirect) response
             //later we get 200 response from htts assecond response and that is actual response fro api
             app.UseHttpsRedirection();
 
@@ -66,8 +98,12 @@ namespace API
 
             app.UseStaticFiles();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthorization();
 
+            //I like to do this after the UseHttpsRedirection as that ensures that any call to a non encrypted
+            //open API endpoint will be redirected to encrypted version.
             app.UseSwaggerDocumentation();
 
             app.UseEndpoints(endpoints =>

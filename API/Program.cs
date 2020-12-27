@@ -14,6 +14,9 @@ namespace API
 {
     public class Program
     {
+        //Entry point for the application
+        //The application initially starts as a command line application. 
+        //The main method Configures ASP dot net core and starts it.
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
@@ -37,6 +40,10 @@ namespace API
             host.Run();
         }
 
+        //CreateHostBuilder calls CreateDefaultBuilder on a static web host class that configure  
+        //the web host using defaults. It deals with the configuration on how ASP dotnet core deals 
+        //with web server configuration files routing and so on.
+        // webBuilder is also configured to use a Startup class file
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
