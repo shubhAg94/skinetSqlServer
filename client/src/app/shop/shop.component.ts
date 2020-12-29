@@ -31,6 +31,11 @@ export class ShopComponent implements OnInit {
     this.getTypes();
   }
 
+  /*
+  In terms of HTTP requests in angular an HTTP request is considered finite. It has a start and an end.
+  And when the HTTP request's response has been completed then angular itself calls the complete on
+  the Subscribe and we don't need to call complete.
+   */
   getProducts(): void{
     this.shopService.getProducts(this.shopParams)
     .subscribe(response => {
