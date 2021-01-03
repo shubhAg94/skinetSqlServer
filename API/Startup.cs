@@ -3,6 +3,7 @@ using API.Helpers;
 using API.Middleware;
 using AutoMapper;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,12 @@ namespace API
             services.AddDbContext<StoreContext>(x =>
             x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
+            //Completely separate database for Identity
+            //t's going to be a physical contact boundary between our own application database
+            services.AddDbContext<AppIdentityDbContext>(x => {
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
+            });
+
             //Redius connection is designed to be shared and reused between callers and 
             //is fully thread safe and ready for less particular usage.
             services.AddSingleton<IConnectionMultiplexer>(c =>
@@ -54,6 +61,7 @@ namespace API
             });
 
             services.AddApplicationServices();
+            services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
 
             //Cors is a mechanism that's used to tell browsers to give a web application running 
@@ -108,6 +116,8 @@ namespace API
             app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
