@@ -52,7 +52,7 @@ namespace API
                 x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
 
-            //Redius connection is designed to be shared and reused between callers and 
+            //Redis connection is designed to be shared and reused between callers and 
             //is fully thread safe and ready for less particular usage.
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
