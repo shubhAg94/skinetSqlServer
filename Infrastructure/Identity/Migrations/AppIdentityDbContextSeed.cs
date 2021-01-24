@@ -23,7 +23,7 @@ namespace Infrastructure.Identity.Migrations
                         Street = "10th Street",
                         City = "Jhunjhunu",
                         State = "Rajasthan",
-                        ZipCode = "300000"
+                        Zipcode = "300000"
                     }
                 };
 

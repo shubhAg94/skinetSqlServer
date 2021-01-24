@@ -12,7 +12,7 @@ namespace API.Dtos
         public string ProductName { get; set; }
 
         [Required]
-        [Range(10, int.MaxValue, ErrorMessage = "Price must be greate than zero")]
+        [Range(1, int.MaxValue, ErrorMessage = "Price must be greate than zero")]
         public decimal Price { get; set; }
 
         [Required]
